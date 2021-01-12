@@ -40,6 +40,21 @@ spec:
        - setWeight: 20
        - pause: {}
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rollouts-demo
+  labels:
+    app: rollouts-demo
+spec:
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: rollouts-demo
+---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -57,3 +72,14 @@ spec:
         backend:
           serviceName: rollouts-demo
           servicePort: 80
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- rollout.yaml
+- service.yaml
+- ingress.yaml
+images:
+- name: alexmt/rollouts-demo
+  newTag: red
