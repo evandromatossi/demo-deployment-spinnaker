@@ -1,0 +1,66 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spinnaker-demo
+  labels:
+    app: spinnaker-demo
+spec:
+  replicas: 10
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: spinnaker-demo
+  template:
+    metadata:
+      labels:
+        app: spinnaker-demo
+    spec:
+      containers:
+        - name: spinnaker-demo
+          image: "alexmt/rollouts-demo:yellow"
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spinnaker-demo
+  labels:
+    app: spinnaker-demo
+spec:
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: spinnaker-demo
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: spinnaker-demo
+  annotations:
+    ingress.kubernetes.io/proxy-body-size: 100M
+    kubernetes.io/ingress.class: "nginx"
+    ingress.kubernetes.io/app-root: "/"
+spec:
+  rules:
+  - host: demo-spinnaker-prd.viavarejo.com.br
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: spinnaker-demo
+          servicePort: 80
