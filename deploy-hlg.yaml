@@ -6,7 +6,7 @@ metadata:
   labels:
     app: spinnaker-demo
 spec:
-  replicas: 11
+  replicas: 5
   revisionHistoryLimit: 3
   selector:
     matchLabels:
