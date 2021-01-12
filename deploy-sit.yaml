@@ -1,24 +1,24 @@
 ---
-apiVersion: argoproj.io/v1alpha1
-kind: Rollout
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: rollouts-demo
+  name: spinnaker-demo
   labels:
-    app: rollouts-demo
+    app: spinnaker-demo
 spec:
   replicas: 10
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: rollouts-demo
+      app: spinnaker-demo
   template:
     metadata:
       labels:
-        app: rollouts-demo
+        app: spinnaker-demo
     spec:
       containers:
-        - name: rollouts-demo
-          image: "alexmt/rollouts-demo:latest"
+        - name: spinnaker-demo
+          image: "alexmt/rollouts-demo:blue"
           ports:
             - name: http
               containerPort: 80
@@ -31,21 +31,13 @@ spec:
             httpGet:
               path: /
               port: http
-  strategy:
-#     blueGreen:
-#       activeService: rollouts-demo
-#       previewService: rollouts-demo-preview
-     canary: 
-       steps:
-       - setWeight: 20
-       - pause: {}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: rollouts-demo
+  name: spinnaker-demo
   labels:
-    app: rollouts-demo
+    app: spinnaker-demo
 spec:
   ports:
     - port: 80
@@ -53,33 +45,22 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: rollouts-demo
+    app: spinnaker-demo
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: rollouts-demo
+  name: spinnaker-demo
   annotations:
     ingress.kubernetes.io/proxy-body-size: 100M
     kubernetes.io/ingress.class: "nginx"
     ingress.kubernetes.io/app-root: "/"
 spec:
   rules:
-  - host: argocd-canary.viavarejo.com.br
+  - host: demo-spinnaker-sit.viavarejo.com.br
     http:
       paths:
       - path: /
         backend:
-          serviceName: rollouts-demo
+          serviceName: spinnaker-demo
           servicePort: 80
----
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-
-resources:
-- rollout.yaml
-- service.yaml
-- ingress.yaml
-images:
-- name: alexmt/rollouts-demo
-  newTag: red
