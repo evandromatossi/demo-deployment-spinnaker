@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: spinnaker-demo
-          image: "alexmt/rollouts-demo:green"
+          image: "alexmt/rollouts-demo:red"
           ports:
             - name: http
               containerPort: 80
