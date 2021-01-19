@@ -6,7 +6,7 @@ metadata:
   labels:
     app: spinnaker-demo
 spec:
-  replicas: 7
+  replicas: 3
   revisionHistoryLimit: 3
   selector:
     matchLabels:
@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: spinnaker-demo
-          image: "alexmt/rollouts-demo:yellow"
+          image: "alexmt/rollouts-demo:red"
           ports:
             - name: http
               containerPort: 80
