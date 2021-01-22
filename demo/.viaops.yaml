@@ -1,4 +1,4 @@
-version: '1.0' # versão desse documento     teste2
+version: '1.0' # versão desse documento
 squad:
   slug: 'viaops' # id da squad responsável por esse projeto
 service-now:
