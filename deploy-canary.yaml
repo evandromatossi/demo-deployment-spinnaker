@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
         - name: rollouts-demo
-          image: "alexmt/rollouts-demo:blue"
+          image: "alexmt/rollouts-demo:red"
           ports:
             - name: http
               containerPort: 80
